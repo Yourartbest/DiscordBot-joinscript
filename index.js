@@ -47,7 +47,7 @@ client.on('guildMemberAdd', async member => {
   invitesCache.set(member.guild.id, new Map(invites.map(inv => [inv.code, inv.uses])));
 
   // Send welcome message
-  const channel = member.guild.channels.cache.find(ch => ch.name === "welcome");
+  const channel = member.guild.channels.cache.find(ch => ch.name === "welcome-and-rules");
   if (channel) {
     channel.send(`Welcome ${member.user}, you've been assigned your role! 🎉`);
   }
