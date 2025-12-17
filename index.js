@@ -27,6 +27,8 @@ client.on('guildMemberAdd', async member => {
   const cachedInvites = invitesCache.get(member.guild.id);
   const usedInvite = invites.find(inv => cachedInvites.get(inv.code) < inv.uses);
 
+  let assignedRoleName = null;
+
   if (usedInvite) {
     console.log(`${member.user.tag} joined using ${usedInvite.code}`);
 
@@ -36,10 +38,19 @@ client.on('guildMemberAdd', async member => {
       "cPnsDw6Tnc": "1450130167388180660"
     };
 
+    // Map invite codes to role names
+    const roleNameMap = {
+      "5t64muTcXf": "Community Member",
+      "cPnsDw6Tnc": "Volunteer"
+    };
+
     const roleId = roleMap[usedInvite.code];
     if (roleId) {
       const role = member.guild.roles.cache.get(roleId);
-      if (role) await member.roles.add(role);
+      if (role) {
+        await member.roles.add(role);
+        assignedRoleName = roleNameMap[usedInvite.code];
+      }
     }
   }
 
@@ -48,8 +59,8 @@ client.on('guildMemberAdd', async member => {
 
   // Send welcome message
   const channel = member.guild.channels.cache.find(ch => ch.name === "welcome-and-rules");
-  if (channel) {
-    channel.send(`Welcome ${member.user}, you've been assigned your role! 🎉`);
+  if (channel && assignedRoleName) {
+    channel.send(`Welcome ${member.user}, you've been assigned the **${assignedRoleName}** role! 🎉`);
   }
 });
 
